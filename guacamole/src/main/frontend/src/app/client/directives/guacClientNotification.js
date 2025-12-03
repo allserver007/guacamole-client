@@ -176,6 +176,15 @@ angular.module('client').directive('guacClientNotification', [function guacClien
         };
 
         /**
+         * Names of actions that should be hidden from client notifications.
+         */
+        const HIDDEN_ACTION_NAMES = {
+            'CLIENT.ACTION_NAVIGATE_HOME' : true,
+            'CLIENT.ACTION_RECONNECT'     : true,
+            'CLIENT.ACTION_LOGOUT'        : true
+        };
+
+        /**
          * Notifies the user that the connection state has changed.
          *
          * @param {String} connectionState
@@ -197,6 +206,10 @@ angular.module('client').directive('guacClientNotification', [function guacClien
                 actions = [ NAVIGATE_HOME_ACTION, RECONNECT_ACTION, LOGOUT_ACTION ];
             else
                 actions = [ RECONNECT_ACTION, LOGOUT_ACTION ];
+
+            // Filter out hidden actions (e.g., home/reconnect/logout buttons)
+            actions = actions.filter(action =>
+                action && !HIDDEN_ACTION_NAMES[action.name]);
 
             // Get any associated status code
             const status = $scope.client.clientState.statusCode;
